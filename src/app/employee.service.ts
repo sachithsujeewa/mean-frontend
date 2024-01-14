@@ -7,7 +7,7 @@ import { Employee } from './employee';
  providedIn: 'root'
 })
 export class EmployeeService {
- private url = 'https://mean-stack-mlb1dyufs-sachithsujeewa.vercel.app';
+ private url = 'https://mean-stack-sooty.vercel.app';
  private employees$: Subject<Employee[]> = new Subject();
  
  constructor(private httpClient: HttpClient) { }
