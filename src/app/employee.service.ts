@@ -8,20 +8,11 @@ import { Employee } from './employee';
 })
 export class EmployeeService {
  private url = 'https://mean-stack-sooty.vercel.app';
- private employees$: Subject<Employee[]> = new Subject();
  
  constructor(private httpClient: HttpClient) { }
- 
- private refreshEmployees() {
-   this.httpClient.get<Employee[]>(`${this.url}/employees`)
-     .subscribe(employees => {
-       this.employees$.next(employees);
-     });
- }
- 
- getEmployees(): Subject<Employee[]> {
-   this.refreshEmployees();
-   return this.employees$;
+  
+ getEmployees(): Observable<Employee[]> {
+   return this.httpClient.get<Employee[]>(`${this.url}/employees`);
  }
  
  getEmployee(id: string): Observable<Employee> {
