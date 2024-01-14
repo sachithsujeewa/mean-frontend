@@ -2,13 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Employee } from '../employee';
 import { EmployeeService } from '../employee.service';
-
-@Component({
-  selector: 'app-employees-list',
-  template: `
-   <h2 class="text-center m-5">Employees List</h2>
  
-   <table class="table table-striped table-bordered">
+@Component({
+ selector: 'app-employees-list',
+ template: `
+   <h2 class="text-center m-5">Employees List</h2>
+   <button class="btn btn-primary mb-3" [routerLink]="['new']">Add a New Employee</button>
+
+   <div *ngIf="!(employees$ | async)" class="d-flex justify-content-center align-items-center vh-90">
+     <div class="spinner-border text-danger" role="status" style="width: 5rem; height: 5rem;">
+       <span class="visually-hidden">Loading...</span>
+     </div>
+   </div>
+ 
+   <table class="table table-striped table-bordered" *ngIf="employees$ | async as employees">
        <thead>
            <tr>
                <th>Name</th>
@@ -19,9 +26,7 @@ import { EmployeeService } from '../employee.service';
        </thead>
  
        <tbody>
-            <tr *ngIf="!(employees$ | async)?.length">
-                <td colspan="4" class="text-center">No Employees Found</td>
-           <tr *ngFor="let employee of employees$ | async">
+           <tr *ngFor="let employee of employees">
                <td>{{employee.name}}</td>
                <td>{{employee.position}}</td>
                <td>{{employee.level}}</td>
@@ -31,27 +36,25 @@ import { EmployeeService } from '../employee.service';
                </td>
            </tr>
        </tbody>
-   </table>
- 
-   <button class="btn btn-primary mt-3" [routerLink]="['new']">Add a New Employee</button>
+   </table>  
  `
 })
 export class EmployeesListComponent implements OnInit {
-  employees$: Observable<Employee[]> = new Observable();
-
-  constructor(private employeesService: EmployeeService) { }
-
-  ngOnInit(): void {
-    this.fetchEmployees();
-  }
-
-  deleteEmployee(id: string): void {
-    this.employeesService.deleteEmployee(id).subscribe({
-      next: () => this.fetchEmployees()
-    });
-  }
-
-  private fetchEmployees(): void {
-    this.employees$ = this.employeesService.getEmployees();
-  }
+ employees$: Observable<Employee[]> = new Observable();
+ 
+ constructor(private employeesService: EmployeeService) { }
+ 
+ ngOnInit(): void {
+   this.fetchEmployees();
+ }
+ 
+ deleteEmployee(id: string): void {
+   this.employeesService.deleteEmployee(id).subscribe({
+     next: () => this.fetchEmployees()
+   });
+ }
+ 
+ private fetchEmployees(): void {
+   this.employees$ = this.employeesService.getEmployees();
+ }
 }
