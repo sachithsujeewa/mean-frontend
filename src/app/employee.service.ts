@@ -9,10 +9,17 @@ import { Employee } from './employee';
 export class EmployeeService {
  private url = 'https://mean-stack-sooty.vercel.app';
  
+ private employees$: Observable<Employee[]> = new Subject();
+ 
  constructor(private httpClient: HttpClient) { }
-  
+ 
+ private refreshEmployees() {
+   this.employees$ = this.httpClient.get<Employee[]>(`${this.url}/employees`)
+ }
+ 
  getEmployees(): Observable<Employee[]> {
-   return this.httpClient.get<Employee[]>(`${this.url}/employees`);
+   this.refreshEmployees();
+   return this.employees$;
  }
  
  getEmployee(id: string): Observable<Employee> {
