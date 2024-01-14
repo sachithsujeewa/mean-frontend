@@ -19,6 +19,8 @@ import { EmployeeService } from '../employee.service';
        </thead>
  
        <tbody>
+            <tr *ngIf="!(employees$ | async)?.length">
+                <td colspan="4" class="text-center">No Employees Found</td>
            <tr *ngFor="let employee of employees$ | async">
                <td>{{employee.name}}</td>
                <td>{{employee.position}}</td>
